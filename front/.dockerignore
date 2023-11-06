@@ -1,0 +1,42 @@
+# Ignore Node.js modules and npm-related files
+node_modules
+npm-debug.log
+yarn-error.log
+
+# Ignore build artifacts
+build
+dist
+out
+public
+
+# Ignore any log files
+logs
+*.log
+*.log.*
+*.pid
+
+# Ignore development and test environment files
+.env
+.env.local
+.env.*.local
+*.local
+
+# Ignore version control system directories and files
+.git
+.gitignore
+.gitattributes
+.hg
+.hgignore
+.hgattributes
+svn
+CVS
+
+# Ignore OS-specific files
+.DS_Store
+Thumbs.db
+
+# Ignore text editor and IDE project files
+.vscode
+.idea
+
+# Ignore any other files or directories specific to your project
