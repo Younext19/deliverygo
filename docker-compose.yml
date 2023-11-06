@@ -1,0 +1,39 @@
+version: "3.8"
+services:
+  front:
+    build:
+      context: ./front
+      dockerfile: Dockerfile
+
+    container_name: deliverygofront
+    restart: always
+    ports:
+      - "3000:3000"
+    volumes:
+      - type: bind
+        source: ./front
+        target: /front
+    tty: true
+  back:
+    build:
+      context: ./back
+      dockerfile: Dockerfile
+    restart: always
+    container_name: deliverygoback
+    ports:
+      - "8080:8080"
+    volumes:
+      - type: bind
+        source: ./back
+        target: /back
+    depends_on:
+      - mongo
+  mongo:
+    image: mongo
+    volumes:
+      - "./mongo/data:/data/db"
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=api
+      - MONGO_INITDB_ROOT_PASSWORD=docker1234
