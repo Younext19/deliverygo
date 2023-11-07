@@ -19,10 +19,10 @@ jobs:
           node-version: 18
 
       - name: Install React dependencies
-        run: npm install
+        run: cd front && npm install && cd ..
 
       - name: Build React app
-        run: npm run build
+        run: cd front && npm run build && cd ..
 
       - name: Set up Node.js for Express.js
         uses: actions/setup-node@v3
