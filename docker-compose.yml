@@ -13,9 +13,8 @@ services:
       - type: bind
         source: ./front
         target: /front
-    tty: true
     networks:
-      - deliverygo
+      - deliverygonetwork
   back:
     build:
       context: ./back
@@ -30,16 +29,30 @@ services:
         target: /back
     depends_on:
       - mongo
+    links:
+      - mongo
     networks:
-      - deliverygo
+      - deliverygonetwork
+    environment:
+      - MONGO_URL=mongo
+      - PORT:8080
   mongo:
     image: mongo
     volumes:
       - "./mongo/data:/data/db"
     ports:
       - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=api
-      - MONGO_INITDB_ROOT_PASSWORD=docker1234
     networks:
-      - deliverygo
+      - deliverygonetwork
+    restart: always
+  mongo-express:
+    container_name: mongo-express
+    image: mongo-express
+    restart: always
+    ports:
+      - "8081:8081"
+    networks:
+      - deliverygonetwork
+networks:
+  deliverygonetwork:
+    driver: bridge
