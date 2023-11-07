@@ -45,5 +45,6 @@ jobs:
 
           # Build and push Express.js Docker image
           docker build -t my-express-app -f back/Dockerfile .
+          echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
           docker tag my-express-app $DOCKERHUB_USERNAME/my-express-app:latest
           docker push $DOCKERHUB_USERNAME/my-express-app:latest
