@@ -13,10 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Merge hotfix into master
+      - name: Set up Git
         run: |
           git config user.name "GitHub Actions"
           git config user.email "actions@github.com"
-          git checkout master
+
+      - name: Merge hotfix into master
+        run: |
+          git fetch
+          git checkout master || git checkout -b master
           git merge --no-ff ${{ github.event.before }}
           git push origin master
