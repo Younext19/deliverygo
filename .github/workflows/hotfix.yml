@@ -1,20 +1,15 @@
-name: Hotfix Merge
-
 on:
   push:
     branches:
-      - hotfix
-
+      - "bugfixes"
 jobs:
-  merge:
+  merge-branch:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
-
-    - name: Merge hotfix into master
-      run: git merge --no-ff origin/hotfix
-
-    - name: Push changes to master
-      run: git push origin master
+      - uses: actions/checkout@v2
+      - uses: everlytic/branch-merge@1.1.2
+        with:
+          github_token: ${{ github.token }}
+          source_ref: ${{ github.ref }}
+          target_branch: 'master'
+          commit_message_template: '[Automated] Merged {source_ref} into target {target_branch}'
