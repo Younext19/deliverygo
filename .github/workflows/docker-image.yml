@@ -1,4 +1,4 @@
-name: Merge Bugfixes to Master
+name: Merge Bugfixess to Master
 
 on:
   push:
