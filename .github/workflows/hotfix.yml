@@ -3,18 +3,20 @@ name: Hotfix Merge
 on:
   push:
     branches:
-      - hotfix
+      - hotfix-branch
 
 jobs:
   merge:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Merge hotfix into master
-      run: git merge --no-ff origin/hotfix
-
-    - name: Push changes to master
-      run: git push origin master
+      - name: Merge hotfix into master
+        run: |
+          git config user.name "GitHub Actions"
+          git config user.email "actions@github.com"
+          git checkout master
+          git merge --no-ff ${{ github.event.before }}
+          git push origin master
