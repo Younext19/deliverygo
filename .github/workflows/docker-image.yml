@@ -3,7 +3,7 @@ name: Merge Bugfixes to Production
 on:
   push:
     branches:
-      - 'bugfixes/*'
+      - 'bugfixes'
 
 jobs:
   merge-to-production:
