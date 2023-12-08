@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - hotfix
-
 jobs:
   merge:
     runs-on: ubuntu-latest
