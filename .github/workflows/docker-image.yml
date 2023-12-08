@@ -1,34 +1,24 @@
-name: Merge Bugfixes to Production
+name: Merge Bugfixes to Master
 
 on:
   push:
     branches:
-      - 'bugfixes'
+      - bugfixes
 
 jobs:
-  merge-to-production:
+  merge:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Merge changes to production
-      run: |
-        git config user.name "${{ github.actor }}"
-        git config user.email "${{ github.actor }}@users.noreply.github.com"
-        
-        # Replace 'production' with your target branch name
-        TARGET_BRANCH="master"
-        
-        # Get the name of the branch pushed
-        BRANCH_NAME=$(echo "${{ github.ref }}" | sed 's|refs/heads/||')
-        
-        # Check if the branch is bugfixes/*
-        if [[ $BRANCH_NAME == "bugfixes" ]]; then
-          git checkout -b "${BRANCH_NAME}"
-          git merge --no-ff "${BRANCH_NAME}" -m "Merge branch '${BRANCH_NAME}' into ${TARGET_BRANCH}"
-          git push origin "${TARGET_BRANCH}"
-        else
-          echo "Branch is not bugfixes/*, no automatic merge will be performed."
-        fi
+      - name: Merge bugfixes into master
+        run: |
+          git config user.name "${{ github.actor }}"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+          
+          git checkout master
+          git merge --no-ff ${{ github.ref }}
+          
+          git push origin master
