@@ -36,6 +36,8 @@ services:
     environment:
       - MONGO_URL=mongo
       - PORT:8080
+    env_file:
+      - ./back/.env
   mongo:
     image: mongo
     volumes:

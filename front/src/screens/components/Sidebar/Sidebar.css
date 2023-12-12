@@ -1,0 +1,35 @@
+.sideBarContainer {
+  width: 20%;
+  height: 100%;
+  background-color: #fff;
+  padding: 20px;
+  background-color: rgb(76, 70, 100);
+}
+.sideBarHeader {
+  display: flex;
+  justify-content: center;
+}
+
+.imgLogo {
+  width: 80px;
+  height: 80px;
+  margin-right: 10px;
+}
+
+.barItem {
+  display: flex;
+  text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  color: #000;
+  font-size: 22px;
+  height: 60px;
+  background-color: yellow;
+  margin-top: 20px;
+  border-radius: 8px;
+}
+
+.barItem:hover {
+  background-color: #fff;
+  color: #000;
+}

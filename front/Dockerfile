@@ -3,7 +3,7 @@ FROM node:18
 # Définir le répertoire de travail à /frontend
 WORKDIR /front
 # Copier les fichiers nécessaires
-COPY front/package.json  /front/
+COPY package.json  /front/
 # Installer les dépendances
 RUN npm install
 COPY . /front/
