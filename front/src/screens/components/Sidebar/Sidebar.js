@@ -3,7 +3,7 @@ import "./Sidebar.css";
 import logo from "../../..//assets/logo.png";
 export default function Sidebar() {
   return (
-    <div className="sideBarContainer">
+    <div className="sideBarContainer" data-testid="sidebar">
       <div className="sideBarHeader">
         <img src={logo} alt="logo" className="imgLogo" />
       </div>

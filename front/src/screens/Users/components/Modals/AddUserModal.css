@@ -19,13 +19,6 @@
   border-radius: 8px;
 }
 
-.close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  cursor: pointer;
-}
-
 form {
   display: flex;
   flex-direction: column;
@@ -38,8 +31,7 @@ label {
   color: #333; /* Set label text color */
 }
 
-input[type="text"],
-input[type="email"] {
+input[type="text"] {
   width: 100%;
   padding: 8px;
   box-sizing: border-box;
@@ -54,35 +46,4 @@ input[type="email"] {
   align-items: center;
   justify-content: center;
   gap: 10px;
-}
-
-.addUserButton {
-  background-color: #007bff;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  font-weight: bold;
-
-  transition: background-color 0.3s;
-}
-
-.addUserButton:hover {
-  background-color: #0056b3;
-}
-.deleteUserButton {
-  background-color: #dc3545;
-  color: white;
-  padding: 10px;
-  cursor: pointer;
-  border: none;
-  border-radius: 5px;
-  outline: none;
-  transition: background-color 0.3s;
-  font-weight: bold;
-}
-.deleteUserButton:hover {
-  background-color: #b02a37;
 }
