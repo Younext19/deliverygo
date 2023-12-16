@@ -76,12 +76,11 @@ const AddUserModal = ({ showModal, handleClose }) => {
           <div className="availability">
             <p>Disponibilité:</p>
             <input
-              name="email"
               type="checkbox"
-              id="email"
-              required
+              id="isAvailable"
               onChange={formik.handleChange}
               value={formik.values.isAvailable}
+              name="isAvailable"
             />
           </div>
           <AddButton onClick={addUser} />

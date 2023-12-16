@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
+import { useFormik } from "formik";
 
 import "./Users.css";
 import AddUserModal from "./components/Modals/AddUserModal";
-import { deleteDeliver, getDelivers } from "../../api/deliver";
+import { getDelivers } from "../../api/deliver";
 import DeleteUserModal from "./components/Modals/DeleteUserModal";
 import DeleteButton from "./components/Buttons/DeleteButton";
 import AddButton from "./components/Buttons/AddButton";
@@ -16,27 +17,21 @@ import Pagination from "./components/Pagination/Pagination";
 import sortUsersByDate from "./Utils/SortByDate";
 import sortUsersByName from "./Utils/SortByName";
 export default function Users() {
-  const [addModalVisibility, setAddModalVisibility] = useState(false);
-  const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
-  const [editModalVisibility, setEditModalVisibility] = useState(false);
-  const [filterModalVisibility, setFilterModalVisibility] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [users, setUsers] = useState([]); // State to store users
-  const itemsPerPage = 5;
-  const [sortOrderName, setSortOrderName] = useState("asc"); // State for name sort order
-  const [sortDateOrder, setSortDateOrder] = useState("asc"); // State for sort order
-  const [selectedDeliver, setSelectedDeliver] = useState({});
-  const sortUsersByNameClick = () => {
-    const newSortOrderName = sortUsersByName(users, setUsers, sortOrderName);
-    setSortOrderName(newSortOrderName);
-  };
+  const formik = useFormik({
+    initialValues: {
+      search: "", // Ajoutez le champ de recherche
+    },
+    onSubmit: (values) => {
+      // Vous pouvez déclencher la recherche ici si nécessaire
+    },
+  });
+  const [users, setUsers] = useState([]);
 
   useEffect(() => {
     getDelivers()
       .then((data) => {
         // Handle the data here
         setUsers(data);
-        console.log("🚀 ~ file: Users.js:31 ~ .then ~ data:", data);
       })
       .catch((error) => {
         // Handle the error here
@@ -44,27 +39,50 @@ export default function Users() {
       });
   }, []);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
+  // States for modal visibility
+  const [addModalVisibility, setAddModalVisibility] = useState(false);
+  const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
+  const [editModalVisibility, setEditModalVisibility] = useState(false);
+  const [filterModalVisibility, setFilterModalVisibility] = useState(false);
+
+  // States for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+
+  // States for sorting & pagination
+  const itemsPerPage = 5;
+  const [sortOrderName, setSortOrderName] = useState("asc");
+  const [sortDateOrder, setSortDateOrder] = useState("asc");
+  const [selectedDeliver, setSelectedDeliver] = useState({});
+  const sortUsersByNameClick = () => {
+    const newSortOrderName = sortUsersByName(users, setUsers, sortOrderName);
+    setSortOrderName(newSortOrderName);
   };
-
-  const deleteUser = () => {
-    deleteDeliver(selectedDeliver.id);
-  };
-
-  // Calculate the range of displayed users based on the current page
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const displayedUsers = users.slice(startIndex, endIndex);
-
-  function formattedDate(date) {
-    const givenMoment = moment(date);
-    return givenMoment.format("DD MMM YYYY");
-  }
   const sortUsersByDateClick = () => {
     const newSortOrder = sortUsersByDate(users, setUsers, sortDateOrder);
     setSortDateOrder(newSortOrder);
   };
+
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Pagination logic
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  let displayedUsers = users.slice(startIndex, endIndex);
+  const filteredUsers = users.filter((user) =>
+    user.name.toLowerCase().includes(formik.values.search.toLowerCase())
+  );
+  displayedUsers = filteredUsers.slice(startIndex, endIndex);
+  function formattedDate(date) {
+    const givenMoment = moment(date);
+    return givenMoment.format("DD MMM YYYY");
+  }
+  const handleSearchChange = (e) => {
+    formik.handleChange(e);
+    setCurrentPage(1); // Reset the current page to 1 when the search value changes
+  };
+
   return (
     <div className="dashboardContainer" data-testid="users">
       <div className="dashboardHeader">
@@ -73,7 +91,13 @@ export default function Users() {
       <div className="searchBar">
         <div>
           <IconedFilterButton onClick={() => setFilterModalVisibility(true)} />
-          <input className="searchInput" placeholder="Chercher par nom" />
+          <input
+            className="searchInput"
+            placeholder="Chercher par nom"
+            value={formik.values.search}
+            onChange={handleSearchChange}
+            name="search"
+          />
           <FilterButton />
         </div>
         <AddButton onClick={() => setAddModalVisibility(true)} />
