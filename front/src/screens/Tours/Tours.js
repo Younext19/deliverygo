@@ -2,21 +2,19 @@ import React, { useEffect, useState } from "react";
 import moment from "moment";
 import { useFormik } from "formik";
 
-import "./Users.css";
-import AddUserModal from "./components/Modals/AddUserModal";
-import { getDelivers } from "../../api/deliver";
-import DeleteUserModal from "./components/Modals/DeleteUserModal";
+import "./Tours.css";
 import DeleteButton from "../components/Buttons/DeleteButton";
-import AddButton from "../components/Buttons/AddButton";
 import EditButton from "../components/Buttons/EditButton";
-import EditUserModal from "./components/Modals/EditUserModal";
 import FilterButton from "../components/Buttons/FilterButton";
 import IconedFilterButton from "../components/Buttons/IconedFilterButton";
-import FilterUserModal from "./components/Modals/FilterUserModal";
-import Pagination from "./components/Pagination/Pagination";
-import sortUsersByDate from "./Utils/SortByDate";
-import sortUsersByName from "./Utils/SortByName";
-export default function Users() {
+import { getTours } from "../../api/tours";
+import AddButton from "../components/Buttons/AddButton";
+import AddTourModal from "./components/Modals/AddTourModal";
+import Pagination from "../Users/components/Pagination/Pagination";
+import DeleteTourModal from "./components/Modals/DeleteTourModal";
+import EditTourModal from "./components/Modals/EditTourModal";
+import { getSpecificDeliver } from "../../api/deliver";
+export default function Tours() {
   const formik = useFormik({
     initialValues: {
       search: "", // Ajoutez le champ de recherche
@@ -25,13 +23,12 @@ export default function Users() {
       // Vous pouvez déclencher la recherche ici si nécessaire
     },
   });
-  const [users, setUsers] = useState([]);
-
+  const [tours, setTours] = useState([]);
   useEffect(() => {
-    getDelivers()
-      .then((data) => {
-        // Handle the data here
-        setUsers(data);
+    getTours()
+      .then(async (toursData) => {
+        // Set the updated tours state after all async operations are done
+        setTours(toursData);
       })
       .catch((error) => {
         // Handle the error here
@@ -39,28 +36,18 @@ export default function Users() {
       });
   }, []);
 
-  // States for modal visibility
-  const [addModalVisibility, setAddModalVisibility] = useState(false);
-  const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
-  const [editModalVisibility, setEditModalVisibility] = useState(false);
-  const [filterModalVisibility, setFilterModalVisibility] = useState(false);
-
   // States for pagination
   const [currentPage, setCurrentPage] = useState(1);
 
   // States for sorting & pagination
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [sortOrderName, setSortOrderName] = useState("asc");
   const [sortDateOrder, setSortDateOrder] = useState("asc");
-  const [selectedDeliver, setSelectedDeliver] = useState({});
-  const sortUsersByNameClick = () => {
-    const newSortOrderName = sortUsersByName(users, setUsers, sortOrderName);
-    setSortOrderName(newSortOrderName);
-  };
-  const sortUsersByDateClick = () => {
-    const newSortOrder = sortUsersByDate(users, setUsers, sortDateOrder);
-    setSortDateOrder(newSortOrder);
-  };
+  const [selectedTour, setSelectedTour] = useState();
+
+  const [addModalVisibility, setAddModalVisibility] = useState(false);
+  const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
+  const [editModalVisibility, setEditModalVisibility] = useState(false);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
@@ -69,11 +56,12 @@ export default function Users() {
   // Pagination logic
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  let displayedUsers = users.slice(startIndex, endIndex);
-  const filteredUsers = users.filter((user) =>
+  let displayedUsers = tours.slice(startIndex, endIndex);
+  const filteredUsers = tours.filter((user) =>
     user.name.toLowerCase().includes(formik.values.search.toLowerCase())
   );
   displayedUsers = filteredUsers.slice(startIndex, endIndex);
+
   function formattedDate(date) {
     const givenMoment = moment(date);
     return givenMoment.format("DD MMM YYYY");
@@ -86,11 +74,11 @@ export default function Users() {
   return (
     <div className="dashboardContainer" data-testid="users">
       <div className="dashboardHeader">
-        <h1>Livreurs</h1>
+        <h1>Tournées</h1>
       </div>
       <div className="searchBar">
         <div>
-          <IconedFilterButton onClick={() => setFilterModalVisibility(true)} />
+          <IconedFilterButton onClick={() => console.log("hi")} />
           <input
             className="searchInput"
             placeholder="Chercher par nom"
@@ -107,27 +95,11 @@ export default function Users() {
         <table className="table">
           <thead>
             <tr>
-              <th>
-                Nom et prénom
-                <button
-                  className="sortButton"
-                  onClick={() => sortUsersByNameClick()}
-                >
-                  ⬇
-                </button>
-              </th>
-              <th>Voiture</th>
-              <th>Disponible</th>
-              <th>
-                Date de création
-                <button
-                  className="sortButton"
-                  onClick={() => sortUsersByDateClick()}
-                >
-                  ⬇
-                </button>
-              </th>
-
+              <th>Nom</th>
+              <th>Date de début</th>
+              <th>Date de fin</th>
+              <th>Livreur</th>
+              <th>Nombre de livraison</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -135,20 +107,29 @@ export default function Users() {
             {displayedUsers.map((user) => (
               <tr key={user._id}>
                 <td>{user.name}</td>
-                <td>{user.carType}</td>
-                <td>{user.isAvailable ? "Oui" : "Non"}</td>
-                <td>{formattedDate(user.date)}</td>
+                <td>{formattedDate(user.startDate)}</td>
+                <td>{formattedDate(user.endDate)}</td>
+                {/* /* if there is deliver return name else not assigned*/}
+                <td>{user.deliver ? user.deliver : "Pas assigné"}</td>
+                <td>{user?.deliveries?.length}</td>
                 <td className="buttonsActions">
                   <EditButton
                     onClick={() => {
-                      setSelectedDeliver(user);
+                      if (user.deliver) {
+                        alert(
+                          "Vous ne pouvez pas modifier une tournée assigné"
+                        );
+                        return;
+                      }
+                      console.log(user);
                       setEditModalVisibility(true);
+                      setSelectedTour(user);
                     }}
                   />
                   <DeleteButton
                     onClick={() => {
-                      setSelectedDeliver(user);
                       setDeleteModalVisibility(true);
+                      setSelectedTour(user);
                     }}
                   />
                 </td>
@@ -159,28 +140,24 @@ export default function Users() {
         {/* Add Pagination component */}
         <Pagination
           currentPage={currentPage}
-          totalPages={Math.ceil(users.length / itemsPerPage)}
+          totalPages={Math.ceil(tours.length / itemsPerPage)}
           onPageChange={handlePageChange}
         />
       </div>
-      <AddUserModal
+
+      <EditTourModal
+        showModal={editModalVisibility}
+        handleClose={() => setEditModalVisibility(false)}
+        selectedUser={selectedTour}
+      />
+      <AddTourModal
         showModal={addModalVisibility}
         handleClose={() => setAddModalVisibility(false)}
       />
-      <DeleteUserModal
+      <DeleteTourModal
         showModal={deleteModalVisibility}
-        handleClose={() => setDeleteModalVisibility(true)}
-        selectedUser={selectedDeliver}
-      />
-      <EditUserModal
-        showModal={editModalVisibility}
-        handleClose={() => setEditModalVisibility(false)}
-        selectedUser={selectedDeliver}
-      />
-      <FilterUserModal
-        showModal={filterModalVisibility}
-        handleClose={() => setFilterModalVisibility(false)}
-        setUserFiltered={setUsers}
+        handleClose={() => setDeleteModalVisibility(false)}
+        selectedUser={selectedTour}
       />
     </div>
   );

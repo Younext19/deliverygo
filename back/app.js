@@ -7,6 +7,8 @@ const mongoose = require("mongoose");
 const swaggerJsdoc = require("swagger-jsdoc");
 const swaggerUi = require("swagger-ui-express");
 const DeliverRoute = require("./routes/deliver");
+const TourRoute = require("./routes/tours");
+const DeliveryRoute = require("./routes/delivery");
 const port = process.env.PORT || 8080;
 
 mongoose
@@ -29,12 +31,12 @@ app.use(express.json());
 app.use((_req, res, next) => {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "*");
-
   next();
 });
 // app.use("/user", UserRoute);
 app.use("/deliver", DeliverRoute); // Add this line for Deliver routes
-
+app.use("/tours", TourRoute); // Add this line for Tour routes
+app.use("/livraisons", DeliveryRoute); // Add this line for Tour routes
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
@@ -49,7 +51,7 @@ const options = {
     },
     servers: [
       {
-        url: "http://localhost:3000",
+        url: "http://localhost:4200",
       },
     ],
   },

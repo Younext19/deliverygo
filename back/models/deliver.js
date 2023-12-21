@@ -1,9 +1,11 @@
 const mongoose = require("mongoose");
 
+// Model pour un livreur
 const deliverSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   isAvailable: {
     type: Boolean,
@@ -16,6 +18,11 @@ const deliverSchema = new mongoose.Schema({
   date: {
     type: Date,
     default: Date.now,
+  },
+  //nombre de tournées
+  nbrTours: {
+    type: Number,
+    default: 0,
   },
 });
 

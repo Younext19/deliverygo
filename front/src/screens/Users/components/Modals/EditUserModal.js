@@ -1,9 +1,10 @@
 import React, { useEffect } from "react";
 import "./AddUserModal.css"; // Import your custom CSS for styling
-import CancelButton from "../Buttons/CancelButton";
+import CancelButton from "../../../components/Buttons/CancelButton";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import EditButton from "../Buttons/EditButton";
+import EditButton from "../../../components/Buttons/EditButton";
+import { updateDeliver } from "../../../../api/deliver";
 
 const editUserSchema = Yup.object().shape({
   fullName: Yup.string().required("Full Name is required"),
@@ -25,28 +26,23 @@ const EditUserModal = ({ showModal, handleClose, selectedUser }) => {
   }, [selectedUser]);
   const formik = useFormik({
     initialValues: {
-      fullName: "",
-      carType: "",
-      isAvailable: false,
+      fullName: selectedUser.name,
+      carType: selectedUser.carType,
+      isAvailable: selectedUser.isAvailable,
     },
     validationSchema: editUserSchema,
-    onSubmit: async (values, { resetForm }) => {
-      console.log("Form submitted:", values);
-      // Add your login logic here
-
-      // Assuming some asynchronous logic is being performed (e.g., API request)
-      // await yourAsyncSubmitFunction(values);
-
-      // Reset the form to its initial values
-      // resetForm();
-      // handleClose();
-    },
   });
   if (!showModal) {
     return null; // Don't render anything if the modal is not visible
   }
   const editUser = () => {
-    console.log("Form submitted:", formik.values);
+    const updateDeliverData = {
+      id: selectedUser._id,
+      name: formik.values.fullName,
+      carType: formik.values.carType,
+      isAvailable: formik.values.isAvailable,
+    };
+    updateDeliver(updateDeliverData);
   };
 
   return (
@@ -80,7 +76,11 @@ const EditUserModal = ({ showModal, handleClose, selectedUser }) => {
               type="checkbox"
               id="isAvailable"
               value={formik.values.isAvailable}
-              onChange={formik.handleChange}
+              checked={formik.values.isAvailable}
+              onChange={(e) => {
+                formik.handleChange(e);
+                formik.setFieldValue("isAvailable", e.target.checked);
+              }}
             />
           </div>
           <EditButton onClick={editUser} />

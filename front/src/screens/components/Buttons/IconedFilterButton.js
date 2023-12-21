@@ -1,5 +1,5 @@
 import React from "react";
-import Reglage from "../../../../assets/reglage.png";
+import Reglage from "../../../assets/reglage.png";
 
 import "./IconedFilterButton.css";
 export default function IconedFilterButton({ onClick }) {

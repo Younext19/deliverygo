@@ -1,84 +1,168 @@
 import React, { useState } from "react";
 import "./FilterUserModal.css"; // Import your custom CSS for styling
-import AddButton from "../Buttons/AddButton";
-import CancelButton from "../Buttons/CancelButton";
+import { useFormik } from "formik";
+import {
+  filterDeliveries,
+  filterDeliveriesAfter,
+  filterDeliveriesBefore,
+} from "../../../../api/deliver";
+import FilterButton from "../../../components/Buttons/FilterButton";
 
-const FilterUserModal = ({ showModal, handleClose }) => {
-  const [availability, setAvailability] = useState(false);
-  const [afterDate, setAfterDate] = useState("");
-  const [beforeDate, setBeforeDate] = useState("");
-  const [startDate, setStartDate] = useState("");
-  const [endDate, setEndDate] = useState("");
+const FilterUserModal = ({ showModal, handleClose, setUserFiltered }) => {
+  const formik = useFormik({
+    initialValues: {
+      beforeDate: Date.now(),
+      afterDate: Date.now(),
+      availability: false,
+    },
+  });
+
+  const [filterType, setFilterType] = useState(null);
+
   if (!showModal) {
-    return null; // Don't render anything if the modal is not visible
+    return null;
   }
-  const addUser = () => {
-    console.log("addUser");
+
+  const handleFilterTypeChange = (event) => {
+    setFilterType(event.target.value);
   };
 
-  const handleSearch = () => {
-    // Combine filter criteria and pass them to the parent component
-    const filters = {
-      availability,
-      afterDate,
-      beforeDate,
-      startDate,
-      endDate,
-    };
-
-    // applyFilters(filters);
-
-    // Close the modal after applying filters
+  function onSubmit() {
     handleClose();
-  };
+    const data = {
+      beforeDate: new Date(formik.values.beforeDate),
+      afterDate: new Date(formik.values.afterDate),
+      availability: formik.values.availability,
+    };
+    console.log("🚀 ~ file: FilterUserModal.js:39 ~ onSubmit ~ data:", data);
+    console.log(filterType);
+    if (filterType === "allFilter") {
+      filterDeliveries(data)
+        .then((res) => {
+          setUserFiltered(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    } else if (filterType === "beforeDate") {
+      filterDeliveriesBefore(data.beforeDate)
+        .then((res) => {
+          setUserFiltered(res);
+        })
+        .catch((error) => {
+          console.error(error);
+          console.log("Error response:", error.response); // Log the full error response
+        });
+    } else if (filterType === "afterDate") {
+      filterDeliveriesAfter(data.afterDate)
+        .then((res) => {
+          setUserFiltered(res);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  }
 
   return (
     <div className={`modal ${showModal ? "show" : ""}`} onClick={handleClose}>
       <div className="modal-content" onClick={(res) => res.stopPropagation()}>
         <h2>Filter les livreurs par :</h2>
         <form>
-          <label>
-            <input
-              type="checkbox"
-              checked={availability}
-              onChange={() => setAvailability(!availability)}
-            />
-            Disponible
-          </label>
-          <label>
-            After Date:
-            <input
-              type="date"
-              value={afterDate}
-              onChange={(e) => setAfterDate(e.target.value)}
-            />
-          </label>
-          <label>
-            Before Date:
-            <input
-              type="date"
-              value={beforeDate}
-              onChange={(e) => setBeforeDate(e.target.value)}
-            />
-          </label>
-          <label>
-            Start Date:
-            <input
-              type="date"
-              value={startDate}
-              onChange={(e) => setStartDate(e.target.value)}
-            />
-          </label>
-          <label>
-            End Date:
-            <input
-              type="date"
-              value={endDate}
-              onChange={(e) => setEndDate(e.target.value)}
-            />
-          </label>
-          <AddButton onClick={addUser} />
-          <CancelButton onClick={handleClose} />
+          {/* Select one of 3 checkbox type of filter */}
+          <div>
+            <label>
+              <input
+                type="radio"
+                name="allFilter"
+                value="allFilter"
+                checked={filterType === "allFilter"}
+                onChange={handleFilterTypeChange}
+              />
+              Tout les filtres
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="beforeDate"
+                value="beforeDate"
+                checked={filterType === "beforeDate"}
+                onChange={handleFilterTypeChange}
+              />
+              Avant une date
+            </label>
+            <label>
+              <input
+                type="radio"
+                name="afterDate"
+                value="afterDate"
+                checked={filterType === "afterDate"}
+                onChange={handleFilterTypeChange}
+              />
+              Après une date
+            </label>
+
+            {/* If beforeDate is selected */}
+            {filterType === "beforeDate" && (
+              <label>
+                Avant la Date:
+                <input
+                  type="date"
+                  value={formik.values.beforeDate}
+                  onChange={(e) =>
+                    formik.setFieldValue("beforeDate", e.target.value)
+                  }
+                />
+              </label>
+            )}
+            {/* If afterDate is selected */}
+            {filterType === "afterDate" && (
+              <label>
+                Après la Date:
+                <input
+                  type="date"
+                  value={formik.values.afterDate}
+                  onChange={(e) =>
+                    formik.setFieldValue("afterDate", e.target.value)
+                  }
+                />
+              </label>
+            )}
+            {/* If allFilter is selected */}
+            {filterType === "allFilter" && (
+              <div>
+                <label>
+                  Avant la Date:
+                  <input
+                    type="date"
+                    value={formik.values.beforeDate}
+                    onChange={(e) =>
+                      formik.setFieldValue("beforeDate", e.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  Après la Date:
+                  <input
+                    type="date"
+                    value={formik.values.afterDate}
+                    onChange={(e) =>
+                      formik.setFieldValue("afterDate", e.target.value)
+                    }
+                  />
+                </label>
+                <label>
+                  Disponibilité:
+                  <input
+                    type="checkbox"
+                    value={formik.values.availability}
+                    onChange={formik.handleChange}
+                  />
+                </label>
+              </div>
+            )}
+          </div>
+          <FilterButton onClick={onSubmit} />
         </form>
       </div>
     </div>

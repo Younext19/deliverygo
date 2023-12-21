@@ -8,6 +8,6 @@ COPY package.json  /front/
 RUN npm install
 COPY . /front/
 # Exposer le port 4200 pour les connexions entrantes
-EXPOSE 3000
+EXPOSE 4200
 # Définir la commande de démarrage
 CMD ["npm", "run", "start"]

@@ -1,22 +1,22 @@
 import React from "react";
-import "./AddUserModal.css"; // Import your custom CSS for styling
+import "./AddTourModal.css"; // Import your custom CSS for styling
 import AddButton from "../../../components/Buttons/AddButton";
 import CancelButton from "../../../components/Buttons/CancelButton";
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { addDeliver } from "../../../../api/deliver";
+import { addTour } from "../../../../api/tours";
 
 const addUserSchema = Yup.object().shape({
-  fullName: Yup.string().required("Full Name is required"),
-  carType: Yup.string(),
-  isAvailable: Yup.boolean(),
+  name: Yup.string().required("Tour name is required"),
+  startDate: Yup.date().required("Start date is required"),
+  endDate: Yup.date().required("End date is required"),
 });
-const AddUserModal = ({ showModal, handleClose }) => {
+const AddTourModal = ({ showModal, handleClose }) => {
   const formik = useFormik({
     initialValues: {
-      fullName: "",
-      carType: "",
-      isAvailable: false,
+      name: "",
+      startDate: Date.now(),
+      endDate: Date.now(),
     },
     validationSchema: addUserSchema,
     onSubmit: async (values, { resetForm }) => {
@@ -34,17 +34,16 @@ const AddUserModal = ({ showModal, handleClose }) => {
   if (!showModal) {
     return null; // Don't render anything if the modal is not visible
   }
-  const addUser = () => {
+  const addTourFunc = () => {
     console.log("Form submitted:", formik.values);
-    const deliver = {
-      name: formik.values.fullName,
-      carType: formik.values.carType,
-      isAvailable: formik.values.isAvailable,
+    const tour = {
+      name: formik.values.name,
+      startDate: formik.values.startDate,
+      endDate: formik.values.endDate,
     };
-    addDeliver(deliver).then((res) => {
+    addTour(tour).then((res) => {
       console.log(res);
     });
-    console.log("addUser");
   };
 
   return (
@@ -52,38 +51,38 @@ const AddUserModal = ({ showModal, handleClose }) => {
       <div className="modal-content" onClick={(res) => res.stopPropagation()}>
         <h2>Ajouter un utilisateur</h2>
         <form>
-          <label htmlFor="fullName">Nom & prénom:</label>
+          <label htmlFor="fullName">Nom :</label>
           <input
-            name="fullName"
+            name="name"
             type="text"
-            id="fullName"
+            id="name"
             placeholder="Nom et prénom"
             required
             onChange={formik.handleChange}
-            value={formik.values.fullName}
+            value={formik.values.name}
           />
 
-          <label htmlFor="carType">Marque de voiture:</label>
+          <label htmlFor="carType">Date de début:</label>
           <input
-            name="carType"
-            type="text"
-            id="carType"
+            name="startDate"
+            type="date"
+            id="startDate"
             required
-            placeholder="Toyota"
             onChange={formik.handleChange}
-            value={formik.values.carType}
+            value={formik.values.startDate}
           />
-          <div className="availability">
-            <p>Disponibilité:</p>
-            <input
-              type="checkbox"
-              id="isAvailable"
-              onChange={formik.handleChange}
-              value={formik.values.isAvailable}
-              name="isAvailable"
-            />
-          </div>
-          <AddButton onClick={addUser} />
+
+          <label htmlFor="carType">Date de fin:</label>
+          <input
+            name="endDate"
+            type="date"
+            id="endDate"
+            required
+            onChange={formik.handleChange}
+            value={formik.values.endDate}
+          />
+
+          <AddButton onClick={addTourFunc} />
           <CancelButton onClick={handleClose} />
         </form>
       </div>
@@ -91,4 +90,4 @@ const AddUserModal = ({ showModal, handleClose }) => {
   );
 };
 
-export default AddUserModal;
+export default AddTourModal;

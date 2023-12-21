@@ -13,10 +13,15 @@ export default function Sidebar() {
         </a>
       </div>
       <div className="sideBarMenuItem">
+        <a href="/tournees" className="barItem">
+          Gestion des tournées
+        </a>
+      </div>
+      <div className="sideBarMenuItem">
         <a href="/courses" className="barItem">
           Gestion des courses
         </a>
-      </div>
+      </div>{" "}
     </div>
   );
 }

@@ -1,10 +1,9 @@
 import React from "react";
-import "./DeleteUserModal.css"; // Import your custom CSS for styling
 import DeleteButton from "../../../components/Buttons/DeleteButton";
 import CancelButton from "../../../components/Buttons/CancelButton";
-import { deleteDeliver } from "../../../../api/deliver";
+import { deleteTour } from "../../../../api/tours";
 
-const DeleteUserModal = ({ showModal, handleClose, selectedUser }) => {
+const DeleteTourModal = ({ showModal, handleClose, selectedUser }) => {
   console.log(
     "🚀 ~ file: DeleteUserModal.js:8 ~ DeleteUserModal ~ selectedUser:",
     selectedUser
@@ -16,14 +15,14 @@ const DeleteUserModal = ({ showModal, handleClose, selectedUser }) => {
   const deleteUser = () => {
     // Request ...
     console.log("deleteUser");
-    deleteDeliver(selectedUser._id).then((res) => {
+    deleteTour(selectedUser._id).then((res) => {
       console.log(res);
     });
   };
   return (
     <div className={`modal ${showModal ? "show" : ""}`} onClick={handleClose}>
       <div className="modal-content" onClick={(res) => res.stopPropagation()}>
-        <h2>Supprimer un utilisateur</h2>
+        <h2>Supprimer une tournée</h2>
         <form>
           <DeleteButton onClick={deleteUser} />
           <CancelButton onClick={handleClose} />
@@ -33,4 +32,4 @@ const DeleteUserModal = ({ showModal, handleClose, selectedUser }) => {
   );
 };
 
-export default DeleteUserModal;
+export default DeleteTourModal;
