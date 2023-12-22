@@ -46,18 +46,11 @@ const Deliver = require("../models/deliver"); // You should import the Deliver m
 // Create a new tour
 router.post("/", async (req, res) => {
   try {
-    // Assuming your request body includes an array of delivery IDs
-
-    // Create the tour
     const tour = new Tour(req.body);
-
-    // Startdate musn't be greater than enddate
     if (tour.startDate > tour.endDate) {
       return res.status(400).send({ error: "Invalid dates!" });
     }
-    // Save the tour
     await tour.save();
-
     res.status(201).send(tour);
   } catch (error) {
     console.error("Error creating tour:", error);

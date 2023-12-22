@@ -1,9 +1,7 @@
 import React, { useEffect, useState } from "react";
 import EditButton from "../components/Buttons/EditButton";
 import DeleteButton from "../components/Buttons/DeleteButton";
-import moment from "moment";
 import { useFormik } from "formik";
-import IconedFilterButton from "../components/Buttons/IconedFilterButton";
 import FilterButton from "../components/Buttons/FilterButton";
 import AddButton from "../components/Buttons/AddButton";
 import Pagination from "../Users/components/Pagination/Pagination";
@@ -15,10 +13,7 @@ import DeleteDeliveryModal from "./components/DeleteDeliveryModal";
 export default function Delivery() {
   const formik = useFormik({
     initialValues: {
-      search: "", // Ajoutez le champ de recherche
-    },
-    onSubmit: (values) => {
-      // Vous pouvez déclencher la recherche ici si nécessaire
+      search: "",
     },
   });
   const [DeliveriesData, setDeliveriesData] = useState([]);
@@ -26,7 +21,6 @@ export default function Delivery() {
   useEffect(() => {
     getDeliveries()
       .then(async (dlvData) => {
-        console.log("🚀 ~ file: Delivery.js:26 ~ .then ~ dlvData:", dlvData);
         setDeliveriesData(dlvData);
       })
       .catch((error) => {
@@ -46,20 +40,6 @@ export default function Delivery() {
   const [deleteModalVisibility, setDeleteModalVisibility] = useState(false);
   const [editModalVisibility, setEditModalVisibility] = useState(false);
 
-  const [Deliveries, setDeliveries] = useState([]);
-  useEffect(() => {
-    getDeliveries()
-      .then((res) => {
-        setDeliveries(res);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  });
-  function formattedDate(date) {
-    const givenMoment = moment(date);
-    return givenMoment.format("DD MMM YYYY");
-  }
   const handleSearchChange = (e) => {
     formik.handleChange(e);
     setCurrentPage(1); // Reset the current page to 1 when the search value changes
@@ -128,7 +108,7 @@ export default function Delivery() {
         {/* Add Pagination component */}
         <Pagination
           currentPage={currentPage}
-          totalPages={Math.ceil(5 / itemsPerPage)}
+          totalPages={Math.ceil(DeliveriesData.length / itemsPerPage)}
           onPageChange={handlePageChange}
         />
         <AddDeliveryModal

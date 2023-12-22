@@ -6,10 +6,10 @@ import AddButton from "../../components/Buttons/AddButton";
 import CancelButton from "../../components/Buttons/CancelButton";
 import { addDelivery } from "../../../api/deliveries";
 
-const addUserSchema = Yup.object().shape({
-  name: Yup.string().required("Tour name is required"),
-  startDate: Yup.date().required("Start date is required"),
-  endDate: Yup.date().required("End date is required"),
+const addDeliverySchema = Yup.object().shape({
+  depositAddress: Yup.string().required("depositAddress is required"),
+  pickupAddress: Yup.string().required("pickupAddress is required"),
+  statut: Yup.string().required("statutis required"),
 });
 const AddDeliveryModal = ({ showModal, handleClose }) => {
   const formik = useFormik({
@@ -18,21 +18,13 @@ const AddDeliveryModal = ({ showModal, handleClose }) => {
       pickupAddress: "",
       statut: "",
     },
-    validationSchema: addUserSchema,
+    validationSchema: addDeliverySchema,
     onSubmit: async (values, { resetForm }) => {
       console.log("Form submitted:", values);
-      // Add your login logic here
-
-      // Assuming some asynchronous logic is being performed (e.g., API request)
-      // await yourAsyncSubmitFunction(values);
-
-      // Reset the form to its initial values
-      // resetForm();
-      // handleClose();
     },
   });
   if (!showModal) {
-    return null; // Don't render anything if the modal is not visible
+    return null;
   }
   const addLivraisonFunc = () => {
     console.log("Form submitted:", formik.values);
@@ -41,9 +33,7 @@ const AddDeliveryModal = ({ showModal, handleClose }) => {
       pickupAddress: formik.values.pickupAddress,
       status: formik.values.statut,
     };
-    // addTour(tour).then((res) => {
-    //   console.log(res);
-    // });
+
     addDelivery(delivery);
   };
 

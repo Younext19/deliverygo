@@ -80,7 +80,7 @@ export default function Users() {
   }
   const handleSearchChange = (e) => {
     formik.handleChange(e);
-    setCurrentPage(1); // Reset the current page to 1 when the search value changes
+    setCurrentPage(1);
   };
 
   return (

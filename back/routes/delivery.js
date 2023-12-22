@@ -3,13 +3,13 @@ const router = express.Router();
 const Tour = require("../models/tours");
 const Delivery = require("../models/delivery");
 
-// Create a new deliver swagger documentation
+// Create a new livraison swagger documentation
 /**
  * @swagger
- * /deliver:
+ * /livraison:
  *   post:
- *     summary: Create a new deliver
- *     tags: [Deliver]
+ *     summary: Create a new livraison
+ *     tags: [livraison]
  *     requestBody:
  *       required: true
  *       content:
@@ -30,11 +30,11 @@ const Delivery = require("../models/delivery");
  *                 description: The tour assigned
  *     responses:
  *       200:
- *         description: The deliver was successfully created
+ *         description: The livraison was successfully created
  *         contens:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Deliver'
+ *               $ref: '#/components/schemas/livraison'
  *       500:
  *         description: Some server error
  *       400:
@@ -56,17 +56,17 @@ router.post("/", async (req, res) => {
 // swagger for get all deliveries
 /**
  * @swagger
- * /deliver:
+ * /livraison:
  *   get:
  *     summary: Returns the list of all the deliveries
- *     tags: [Deliver]
+ *     tags: [livraison]
  *     responses:
  *       200:
  *         description: The list of the deliveries
  *         contens:
  *           application/json:
  *             schema:
- *               $ref: '#/components/schemas/Deliver'
+ *               $ref: '#/components/schemas/livraison'
  *       500:
  *         description: Some server error
  */
@@ -85,10 +85,10 @@ router.get("/", async (req, res) => {
 // swagger for delete by id
 /**
  * @swagger
- * /deliver/{id}:
+ * /livraison/{id}:
  *   delete:
  *     summary: Remove the delivery by id
- *     tags: [Deliver]
+ *     tags: [livraison]
  *     parameters:
  *       - in: path
  *         name: id
@@ -123,10 +123,10 @@ router.delete("/:id", async (req, res) => {
 //swagger for put delivery
 /**
  * @swagger
- * /deliver/{id}:
+ * /livraison/{id}:
  *  put:
  *    summary: Update the delivery by id
- *    tags: [Deliver]
+ *    tags: [livraison]
  *    parameters:
  *      - in: path
  *        name: id
@@ -158,7 +158,7 @@ router.delete("/:id", async (req, res) => {
  *        contens:
  *          application/json:
  *            schema:
- *              $ref: '#/components/schemas/Deliver'
+ *              $ref: '#/components/schemas/livraison'
  *      404:
  *        description: The delivery was not found
  *      500:
