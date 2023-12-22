@@ -1,13 +1,7 @@
-# Utilisation d'une image Node.js 18 avec une base Alpine
 FROM node:18
-# Définir le répertoire de travail à /frontend
 WORKDIR /front
-# Copier les fichiers nécessaires
-COPY front/package.json  /front/
-# Installer les dépendances
+COPY package.json  /front/
 RUN npm install
 COPY . /front/
-# Exposer le port 4200 pour les connexions entrantes
-EXPOSE 3000
-# Définir la commande de démarrage
+EXPOSE 4200
 CMD ["npm", "run", "start"]

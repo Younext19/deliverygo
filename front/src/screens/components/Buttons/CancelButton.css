@@ -1,0 +1,14 @@
+.cancelUserButton {
+  background-color: #95a5a6;
+  color: white;
+  padding: 10px;
+  cursor: pointer;
+  border: none;
+  border-radius: 5px;
+  outline: none;
+  transition: background-color 0.3s;
+  font-weight: bold;
+}
+.cancelUserButton:hover {
+  background-color: #748182;
+}

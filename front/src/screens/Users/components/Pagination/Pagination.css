@@ -1,0 +1,19 @@
+/* Add this to your CSS or styling file */
+.pagination-container {
+  display: flex;
+  margin-top: 20px;
+}
+
+.pagination-container button {
+  background-color: #3498db;
+  color: #fff;
+  border: none;
+  padding: 8px 16px;
+  margin-right: 5px;
+  cursor: pointer;
+  border-radius: 4px;
+}
+
+.pagination-container button.active {
+  background-color: #2980b9;
+}

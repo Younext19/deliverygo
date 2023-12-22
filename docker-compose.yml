@@ -8,7 +8,7 @@ services:
     container_name: deliverygofront
     restart: always
     ports:
-      - "3000:3000"
+      - "4200:4200"
     volumes:
       - type: bind
         source: ./front
@@ -36,6 +36,8 @@ services:
     environment:
       - MONGO_URL=mongo
       - PORT:8080
+    env_file:
+      - ./back/.env
   mongo:
     image: mongo
     volumes:
